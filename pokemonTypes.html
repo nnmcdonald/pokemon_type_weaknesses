@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Pokemon Type Weaknesses/Resistances</title>
+  <link rel="stylesheet" href="poke_types.css">
+</head>
+
+<!--TODO add a sidebar that has a link to pokemon website and search-->
+<body>
+  <div id="pageWrap" class="container-flex">
+    <div id="sidebar">
+      <ul>
+        <br><br>
+        <li>
+          <a href="https://pokemondb.net" target="_blank" id="PokemonDBLink">PokemonDB.net</a>
+        </li>
+      </ul>
+    </div>
+    <div id="TypeButtonsSection">
+      <div class="container-flex">
+        <h1>Please choose one or two types to see weaknesses/resistances.</h1>
+      </div>
+      <div class="container-flex">
+        <p id="TypeSelectionError"></p>
+      </div>
+
+      <div class="container-flex" id="TypeButtonsBox">
+      </div>
+
+      <div class="container-flex">
+        <button id="getWeaknesses" class="Button-Success">View Type Weaknesses/Resistances</button>
+        <button id="ClearButton" class="Button-Warning">Clear Selection</button>
+      </div>
+      <br>
+      <div class="container-flex" id="TypeWeaknesses">
+      </div>
+    </div>
+    <br>
+    <br>
+
+  </div>
+
+</body>
+
+<script src="jquery-3.4.1.min.js"></script>
+<script src="poke_types.js"></script>
+
+</html>
