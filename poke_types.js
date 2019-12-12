@@ -1,5 +1,5 @@
-// selectedTypes[i] is a boolean indicating if types[i] is selected
-let selectedTypes = [];
+// Stores the indexes of selected types, -1 indicates no selection
+let selectedTypes = [-1, -1];
 let types = ["Normal", "Fighting", "Flying", "Poison", "Ground",
             "Rock", "Bug", "Ghost", "Steel", "Fire", "Water",
             "Grass", "Electric", "Psychic", "Ice", "Dragon",
@@ -28,11 +28,9 @@ let typeWeaknessIndexes = [[1,2,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1],
   [1,0.5,1,2,1,1,0.5,1,2,1,1,1,1,1,1,0,0.5,1]];
 let typeButtonsBox = $("#TypeButtonsBox");
 
-// Creates type buttons and
-//Initializes values of selectedTypes to false for all types
+// Creates type buttons
 for(let i = 0; i < types.length; i++) {
   typeButtonsBox.append('<button class="Button" id="' + types[i] + '">' + types[i] + '</button>');
-  selectedTypes[i] = false;
 }
 
 // Get type index from String identifier
@@ -47,11 +45,8 @@ function getTypeIndex(identifier) {
 
 function numberOfTypesSelected() {
   let count = 0;
-  for(let i = 0; i < selectedTypes.length; i++) {
-    if(selectedTypes[i]){
-      count++;
-    };
-  };
+  if(selectedTypes[0] != -1) { count++ };
+  if(selectedTypes[1] != -1) { count++ };
   return count;
 };
 
@@ -59,31 +54,40 @@ let typeButtons = $("#TypeButtonsBox button");
 
 typeButtons.click(function() {
   let selectedButton = $(this).attr("id");
-  let typeIndex = getTypeIndex(selectedButton);
+
   // Deactivate a button if it is currently selected
-  if(selectedTypes[typeIndex]) {
-    $("#TypeSelectionError").html("");
-    selectedTypes[typeIndex] = false;
-    $(this).toggleClass("active");
-  // Check that <= 2 selections are made
-  } else if(numberOfTypesSelected() === 2) {
+  if(selectedTypes[0] === selectedButton) {
+    deactivateButton(this, 0);
+  } else if(selectedTypes[1] === selectedButton) {
+    deactivateButton(this, 1);
+  } // Check that <= 2 selections are made
+  else if(numberOfTypesSelected() === 2) {
     $("#TypeSelectionError").html("Please only select at most 2 types.").css("color", "red");
-  // Set button to active
-  } else {
+  } // Set button to active
+  else {
     $("#TypeSelectionError").html("");
-    selectedTypes[typeIndex] = true;
+    if(selectedTypes[0] === -1) {
+      selectedTypes[0] = selectedButton;
+    } else {
+      selectedTypes[1] = selectedButton;
+    }
     $(this).toggleClass("active");
   }
 });
+
+function deactivateButton(button, index) {
+  $("#TypeSelectionError").html("");
+  selectedTypes[index] = -1;
+  $(button).toggleClass("active");
+}
 
 let clearButton = $("#TypeButtonsSection #ClearButton");
 
 clearButton.click(function() {
   typeButtons.removeClass("active");
   $("#TypeWeaknesses").html("");
-  for(let i = 0; i < types.length; i++) {
-    if(selectedTypes[i]) { selectedTypes[i] = false; };
-  };
+  selectedTypes[0] = -1;
+  selectedTypes[1] = -1;
 });
 
 function getWeaknesses() {
@@ -91,10 +95,11 @@ function getWeaknesses() {
   for(let i = 0; i < types.length; i++) {
     weaknesses[i] = 1;
   };
-  for(let i = 0; i < types.length; i++) {
-    if(selectedTypes[i]) {
+  for(let i = 0; i < selectedTypes.length; i++) {
+    if(selectedTypes[i] != -1) {
+      let index = getTypeIndex(selectedTypes[i]);
       for(let j = 0; j < types.length; j++) {
-        weaknesses[j] *= typeWeaknessIndexes[i][j];
+        weaknesses[j] *= typeWeaknessIndexes[index][j];
       };
     };
   };
